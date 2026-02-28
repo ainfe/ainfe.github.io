@@ -23,9 +23,19 @@ This contains everything you need to run your app locally.
 ## Data Scraping
 
 A Python script in `scripts/scrape_opportunities.py` is used to gather and
-serialize the opportunity listings. The script uses `requests` and
-`beautifulsoup4` to scrape the source site and writes a JSON file to
-`public/opportunities.json`. The React app loads this file at runtime.
+serialize the opportunity listings. The script currently demonstrates a
+simple HTTP fetch and HTML parse, but you can extend it to aggregate data
+from any number of sources (LinkedIn, university portals, NGO sites, etc.).
+
+> **Important:** scraping large commercial platforms like LinkedIn or
+> Indeed often violates their terms of service. You should use official
+> APIs with proper authentication, or deploy a dedicated headless-browser
+> solution. Global, real‑time scraping is a non‑trivial engineering task
+> and may require rotating proxies, rate‑limiting, and legal review.
+
+The frontend itself makes no network requests beyond retrieving the
+locally generated `public/opportunities.json` file. It does not rely on
+any external AI service.
 
 To run the scraper:
 

@@ -20,7 +20,15 @@ import requests
 from bs4 import BeautifulSoup
 import time
 
-# this would normally be the page that contains a list of opportunities
+# in a real deployment you would supply a list of target sources rather
+# than a single dummy URL.  Global scraping across LinkedIn, professional
+# networks, academic portals, etc. typically requires either published
+# APIs or sophisticated headless-browser automation.  LinkedIn forbids
+# unauthorized scraping; using their official API (with credentials) is
+# strongly recommended.
+#
+# We'll keep a placeholder variable here; you can replace this with a list
+# and extend `scrape_opportunities` accordingly.
 TARGET_URL = "https://example.com/opportunities"  # replace with a real URL
 
 OUTPUT_PATH = pathlib.Path(__file__).parents[1] / "public" / "opportunities.json"
@@ -57,12 +65,19 @@ def scrape_opportunities() -> list[dict]:
 
     soup = BeautifulSoup(resp.text, "html.parser")
     results = []
-    # TODO: write real parsing logic here. For now we return stub data.
-    # e.g.:
+    # TODO: write real parsing logic here.  When scraping multiple platforms
+    # you'll likely need specialized handlers for each site/API.  For example,
+    # LinkedIn data is best obtained via their REST API with proper OAuth tokens.
+    # Other sites may require Selenium/Playwright to execute JavaScript.
+    #
+    # Sample parsing outline for a generic HTML page:
     # for entry in soup.select('.opportunity'):
     #     title = entry.select_one('.title').get_text(strip=True)
     #     ...
     #     results.append({ ... })
+    #
+    # For APIs you would call `requests.get(json_url)` and then iterate over
+    # the returned JSON objects.
 
     if not results:
         # fallback if parsing produced nothing
