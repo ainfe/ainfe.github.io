@@ -14,8 +14,8 @@ export default defineConfig(({mode}) => {
       dedupe: ['react', 'react-dom'],
     },
     server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
+      // HMR can be disabled via DISABLE_HMR env var if needed.
+      // File watching is turned off in some environments to prevent flickering.
       hmr: process.env.DISABLE_HMR !== 'true',
     },
   };
