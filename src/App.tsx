@@ -437,25 +437,17 @@ const OpportunityPanel = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
   };
 
   /**
-   * Kick off scraping.  If `forceRefresh` is false we'll attempt to reuse a
-   * cached result and avoid fetching the static JSON repeatedly.
+   * Fetch the latest opportunities JSON; update state only when the
+   * payload differs.  This function is lightweight and suitable for
+   * polling, which keeps the listing effectively realtime.
    */
-  const startScraping = async (forceRefresh = false): Promise<() => void> => {
+  const fetchOpportunities = async (): Promise<void> => {
     if (isScraping) return;
-
     setError(null);
-
-    if (!forceRefresh) {
-      const cached = loadCache();
-      if (cached) {
-        setOpportunities(cached);
-        return;
-      }
-    }
 
     setIsScraping(true);
     try {
-      const res = await fetch('/opportunities.json');
+      const res = await fetch('/opportunities.json', { cache: 'no-store' });
       if (!res.ok) {
         throw new Error('Failed to load opportunities');
       }
@@ -464,13 +456,36 @@ const OpportunityPanel = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
         throw new Error('Unexpected data format');
       }
       const validItems: Opportunity[] = data.filter(isValidOpportunity as any);
-      setOpportunities(validItems);
+      setOpportunities(prev => {
+        if (JSON.stringify(prev) === JSON.stringify(validItems)) return prev;
+        return validItems;
+      });
       saveCache(validItems);
     } catch (err: any) {
       console.error('Scraping error:', err);
       setError(err.message || 'Failed to load opportunities.');
     } finally {
       setIsScraping(false);
+    }
+  };
+
+  /**
+   * Start scraping sequence.  Uses cache if available but still fetches once
+   * immediately so data is up-to-date.  The component also establishes a
+   * 1-second polling interval to keep the list refreshed.
+   */
+  const startScraping = async (forceRefresh = false): Promise<() => void> => {
+    if (!forceRefresh) {
+      const cached = loadCache();
+      if (cached) {
+        setOpportunities(cached);
+        // background update
+        fetchOpportunities();
+      } else {
+        await fetchOpportunities();
+      }
+    } else {
+      await fetchOpportunities();
     }
     return () => {};
   };
@@ -494,17 +509,23 @@ const OpportunityPanel = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
   }, [opportunities, activeFilter]);
 
   useEffect(() => {
-    if (isOpen && opportunities.length === 0) {
-      // attempt to populate from cache first; obtain cancel callback and
-      // register it in the cleanup function so we don't try to update state
-      // after the modal has closed.
-      const promise = startScraping();
-      return () => {
-        promise.then(cancel => {
-          if (typeof cancel === 'function') cancel();
-        });
-      };
+    let intervalId: number | null = null;
+
+    const init = async () => {
+      await startScraping();
+      // begin polling every second
+      intervalId = window.setInterval(fetchOpportunities, 1000);
+    };
+
+    if (isOpen) {
+      init();
     }
+
+    return () => {
+      if (intervalId !== null) {
+        clearInterval(intervalId);
+      }
+    };
   }, [isOpen]);
 
   if (!isOpen) return null;

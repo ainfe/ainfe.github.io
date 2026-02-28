@@ -34,8 +34,19 @@ To run the scraper:
 python -m venv .venv            # optional virtual environment
 source .venv/Scripts/activate   # Windows PowerShell
 pip install -r requirements.txt # see below
-python scripts/scrape_opportunities.py
+python scripts/scrape_opportunities.py          # run once
 ```
+
+For real‑time updates you can run the watcher mode which re‑scrapes and
+rewrites the JSON every second:
+
+```bash
+python scripts/scrape_opportunities.py --watch
+```
+
+Leave this running in a background terminal while you work; the React
+app will poll the resulting `public/opportunities.json` once per second
+and automatically refresh the listing when the file changes.
 
 After running you should have `public/opportunities.json` which the site
 will use. Re-run the script whenever you want to refresh the data.

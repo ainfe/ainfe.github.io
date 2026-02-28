@@ -18,6 +18,7 @@ import json
 import pathlib
 import requests
 from bs4 import BeautifulSoup
+import time
 
 # this would normally be the page that contains a list of opportunities
 TARGET_URL = "https://example.com/opportunities"  # replace with a real URL
@@ -93,4 +94,17 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    parser = argparse.ArgumentParser(description="Scrape opportunities.")
+    parser.add_argument("--watch", action="store_true", help="Run continuously, updating every second.")
+    args = parser.parse_args()
+
+    if args.watch:
+        try:
+            while True:
+                main()
+                time.sleep(1)
+        except KeyboardInterrupt:
+            print("watch mode stopped")
+    else:
+        main()
