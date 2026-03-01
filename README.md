@@ -59,3 +59,11 @@ and automatically refresh the listing when the file changes.
 
 After running you should have `public/opportunities.json` which the site
 will use. Re-run the script whenever you want to refresh the data.
+
+### Building for deployment
+
+When you're ready to publish, run `npm run build`.  The build output
+is placed in `dist/` and uses a **relative base path (`./`)** so that
+it works from the root of GitHub Pages.  Copy the contents of `dist/` to
+`docs/` (or configure your Pages source accordingly) and commit the
+resulting files.
