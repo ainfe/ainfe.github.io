@@ -6,7 +6,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 
 // simple error boundary to show message instead of blank screen
-class AppErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean}> {
+export class AppErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean}> {
   constructor(props: any) {
     super(props);
     this.state = {hasError: false};
