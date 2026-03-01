@@ -7,9 +7,21 @@
     "guide": "Visit example.org to apply.",
     "standoutTips": "Highlight your passion for research.",
     "preparation": "Gather transcripts and letters of recommendation.",
-    "steps": ["Submit online form", "Upload documents", "Interview"],
-    "categories": ["Fellowship", "Entry Level"],
-    "benefits": {"accommodation": false, "visa": false, "flight": false, "stipend": true},
+    "steps": [
+      "Submit online form",
+      "Upload documents",
+      "Interview"
+    ],
+    "categories": [
+      "Fellowship",
+      "Entry Level"
+    ],
+    "benefits": {
+      "accommodation": false,
+      "visa": false,
+      "flight": false,
+      "stipend": true
+    },
     "link": "https://example.org/fellowship"
   }
 ]
