@@ -4,6 +4,23 @@
  */
 
 import React, { useState, useEffect, useMemo } from "react";
+
+// simple error boundary to show message instead of blank screen
+class AppErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean}> {
+  constructor(props: any) {
+    super(props);
+    this.state = {hasError: false};
+  }
+  static getDerivedStateFromError() {
+    return {hasError: true};
+  }
+  render() {
+    if (this.state.hasError) {
+      return <div className="p-8 text-center text-red-500">An unexpected error occurred. Please try refreshing the page.</div>;
+    }
+    return this.props.children;
+  }
+}
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
