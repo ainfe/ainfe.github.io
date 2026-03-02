@@ -7,13 +7,24 @@ import React, { useState, useEffect, useMemo } from "react";
 
 // simple error boundary to show message instead of blank screen
 export class AppErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean}> {
-  constructor(props: any) {
+  // explicitly declare props so TypeScript knows the instance will have it
+  props: {children: React.ReactNode};
+
+  // define the state property with the appropriate type so TypeScript
+  // recognizes it without complaining
+  state: {hasError: boolean} = {hasError: false};
+
+  constructor(props: {children: React.ReactNode}) {
     super(props);
-    this.state = {hasError: false};
+    // state is initialized above, no need to set again here
   }
-  static getDerivedStateFromError() {
+
+  static getDerivedStateFromError(): {hasError: boolean} {
+    // When an error is thrown in a child component, update state so the
+    // next render shows the fallback UI.
     return {hasError: true};
   }
+
   render() {
     if (this.state.hasError) {
       return <div className="p-8 text-center text-red-500">An unexpected error occurred. Please try refreshing the page.</div>;
